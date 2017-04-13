@@ -8,45 +8,39 @@
 
 namespace Cashex.viewmodel
 {
-    using System.ComponentModel;
     using System.Linq;
+    using System.Windows;
     using System.Windows.Input;
     using model;
     using support;
 
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : DependencyObject
     {
-        private string description;
+        public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(
+            "Description", typeof(string), typeof(MainViewModel));
+
         public string Description
         {
-            get { return description; }
-            set
-            {
-                description = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
-            }
+            get { return (string)GetValue(DescriptionProperty); }
+            set { SetValue(DescriptionProperty, value); }
         }
 
-        private string volume;
+        public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register(
+            "Volume", typeof(string), typeof(MainViewModel));
+
         public string Volume
         {
-            get { return volume; }
-            set
-            {
-                volume = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Volume)));
-            }
+            get { return (string)GetValue(VolumeProperty); }
+            set { SetValue(VolumeProperty, value); }
         }
 
-        private decimal summary;
+        public static readonly DependencyProperty SummaryProperty = DependencyProperty.Register(
+            "Summary", typeof(decimal), typeof(MainViewModel));
+
         public decimal Summary
         {
-            get { return summary; }
-            set
-            {
-                summary = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Summary)));
-            }
+            get { return (decimal)GetValue(SummaryProperty); }
+            set { SetValue(SummaryProperty, value); }
         }
 
         public ExpenseCollection Expenses { get; set; } = new ExpenseCollection();
@@ -56,15 +50,13 @@ namespace Cashex.viewmodel
         public MainViewModel()
         {
             Expenses.CollectionChanged += (sender, args) => { Summary = Expenses.Sum(model => model.Volume); };
-            Expenses.Deserialize();
-            AddCommand = new ActionCommand(() => Expenses.Add(description, decimal.Parse(volume)), CanAddExecute);
+            AddCommand = new ActionCommand(() => Expenses.Add(Description, decimal.Parse(Volume)), CanAddExecute);
             DelCommand = new ActionCommand(o => Expenses.Remove(o as ExpenseModel));
+            Expenses.Deserialize();
         }
 
         private bool CanAddExecute() =>
-            Expenses.FirstOrDefault(model => string.Equals(description, model.Description)) == null
-            && !string.IsNullOrEmpty(description) && !string.IsNullOrEmpty(volume);
-
-        public event PropertyChangedEventHandler PropertyChanged;
+            Expenses.FirstOrDefault(model => string.Equals(Description, model.Description)) == null
+            && !string.IsNullOrEmpty(Description) && !string.IsNullOrEmpty(Volume);
     }
 }
