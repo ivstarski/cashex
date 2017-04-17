@@ -17,7 +17,7 @@ namespace Cashex.support
     {
         private const string FILENAME = "data.dat";
 
-        private void Serialize()
+        public void Serialize()
         {
             using( var stream = new MemoryStream() )
             {

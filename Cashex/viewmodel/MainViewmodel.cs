@@ -13,6 +13,7 @@ namespace Cashex.viewmodel
     using System.Windows.Input;
     using model;
     using support;
+    using view;
 
     public class MainViewModel : DependencyObject
     {
@@ -46,17 +47,40 @@ namespace Cashex.viewmodel
         public ExpenseCollection Expenses { get; set; } = new ExpenseCollection();
         public ICommand AddCommand { get; set; }
         public ICommand DelCommand { get; set; }
+        public ICommand EditCommand { get; set; }
 
         public MainViewModel()
         {
-            Expenses.CollectionChanged += (sender, args) => { Summary = Expenses.Sum(model => model.Volume); };
-            AddCommand = new ActionCommand(() => Expenses.Add(Description, decimal.Parse(Volume)), CanAddExecute);
-            DelCommand = new ActionCommand(o => Expenses.Remove(o as ExpenseModel));
+            Expenses.CollectionChanged += (sender, args) => { CalculateSummary(); };
+            AddCommand = new ActionCommand(() => Expenses.Add(Description, decimal.Parse(Volume.Trim())), CanAddExecute);
+            DelCommand = new ActionCommand(Remove);
+            EditCommand = new ActionCommand(Edit);
             Expenses.Deserialize();
         }
+
+        private void CalculateSummary() => Summary = Expenses.Sum(model => model.Volume);
 
         private bool CanAddExecute() =>
             Expenses.FirstOrDefault(model => string.Equals(Description, model.Description)) == null
             && !string.IsNullOrEmpty(Description) && !string.IsNullOrEmpty(Volume);
+
+        private void Remove(object o)
+        {
+            var model = o as ExpenseModel;
+            if( model != null )
+                if( MessageBox.Show($"Действительно желаете удалить\n{o}?",
+                    "Удаление расхода", MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.OK )
+                    Expenses.Remove((ExpenseModel)o);
+        }
+
+        private void Edit(object o)
+        {
+            if( new EditWindow(o as ExpenseModel).ShowDialog() == true )
+            {
+                Expenses.Serialize();
+                CalculateSummary();
+            }
+        }
     }
 }
