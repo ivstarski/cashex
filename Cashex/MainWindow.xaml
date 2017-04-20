@@ -29,19 +29,25 @@
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0">Название расхода</TextBlock>
+                <TextBlock Grid.Row="0" Grid.Column="0">Расход, р.</TextBlock>
                 <TextBox
                     Grid.Row="0"
                     Grid.Column="1"
                     Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock Grid.Row="1" Grid.Column="0">Сумма</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0">Сумма, р.</TextBlock>
                 <TextBox
                     Grid.Row="1"
                     Grid.Column="1"
                     Text="{Binding Volume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Grid.Row="2" Grid.Column="0">Бюджет, р.</TextBlock>
+                <TextBox
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Text="{Binding Total, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
-                    Grid.RowSpan="2"
+                    Grid.RowSpan="3"
                     Grid.Column="2"
                     Width="50"
                     Height="50"
@@ -75,9 +81,12 @@
                                 Foreground="{StaticResource Accent}"
                                 IsReadOnly="True"
                                 Text="{Binding Volume, StringFormat={}{0:#,0.} p.}" />
-                            <Button Grid.Column="2" Width="30" Height="30">
+                            <Button
+                                Grid.Column="2"
+                                Width="30"
+                                Height="30">
                                 <Button.Content>
-                                    <Image Source="images/edit.png" Margin="2"></Image>
+                                    <Image Margin="2" Source="images/edit.png" />
                                 </Button.Content>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
@@ -85,9 +94,12 @@
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </Button>
-                            <Button Grid.Column="3" Width="30" Height="30">
+                            <Button
+                                Grid.Column="3"
+                                Width="30"
+                                Height="30">
                                 <Button.Content>
-                                    <Image Source="images/delete.png" Margin="2"></Image>
+                                    <Image Margin="2" Source="images/delete.png" />
                                 </Button.Content>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
@@ -102,6 +114,10 @@
         </Border>
         <Border Grid.Row="2">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -112,6 +128,13 @@
                     HorizontalAlignment="Right"
                     Foreground="{StaticResource Accent}"
                     Text="{Binding Summary, StringFormat={}{0:#,0.} p.}" />
+                <TextBlock Grid.Row="1" HorizontalAlignment="Right">Баланс:</TextBlock>
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Foreground="{StaticResource Accent}"
+                    Text="{Binding Balance, StringFormat={}{0:#,0.} p.}" />
             </Grid>
         </Border>
     </Grid>
