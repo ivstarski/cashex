@@ -31,7 +31,7 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0">Расход, р.</TextBlock>
+                <TextBlock Grid.Row="0" Grid.Column="0">Расход</TextBlock>
                 <TextBox
                     Grid.Row="0"
                     Grid.Column="1"
@@ -120,18 +120,25 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
+                    <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock HorizontalAlignment="Right">Итого:</TextBlock>
+                <Button Grid.RowSpan="2" Command="{Binding ScrShotCommand}">Сделать скриншот</Button>
+                <TextBlock Grid.Column="1" HorizontalAlignment="Right">Итого:</TextBlock>
                 <TextBlock
-                    Grid.Column="1"
+                    Grid.Column="2"
                     HorizontalAlignment="Right"
                     Foreground="{StaticResource Accent}"
                     Text="{Binding Summary, StringFormat={}{0:#,0.} p.}" />
-                <TextBlock Grid.Row="1" HorizontalAlignment="Right">Баланс:</TextBlock>
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="1"
+                    HorizontalAlignment="Right">
+                    Баланс:
+                </TextBlock>
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="2"
                     HorizontalAlignment="Right"
                     Foreground="{StaticResource Accent}"
                     Text="{Binding Balance, StringFormat={}{0:#,0.} p.}" />

@@ -8,9 +8,13 @@
 
 namespace Cashex.viewmodel
 {
+    using System;
+    using System.IO;
     using System.Linq;
     using System.Windows;
     using System.Windows.Input;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
     using model;
     using mvvm.x86;
     using support;
@@ -67,6 +71,7 @@ namespace Cashex.viewmodel
         public ICommand AddCommand { get; set; }
         public ICommand DelCommand { get; set; }
         public ICommand EditCommand { get; set; }
+        public ICommand ScrShotCommand { get; set; }
 
         public MainViewModel( )
         {
@@ -74,6 +79,7 @@ namespace Cashex.viewmodel
             AddCommand = new ActionCommand( ( ) => Expenses.Add( Description, decimal.Parse( Volume.Trim() ) ), CanAddExecute );
             DelCommand = new ActionCommand( Remove );
             EditCommand = new ActionCommand( Edit );
+            ScrShotCommand = new ActionCommand( ScreenShot );
             Expenses.Deserialize();
         }
 
@@ -103,6 +109,32 @@ namespace Cashex.viewmodel
             {
                 Expenses.Serialize();
                 CalculateSummary();
+            }
+        }
+
+        private void ScreenShot( )
+        {
+            var control = Application.Current.MainWindow;
+            if ( control != null )
+            {
+                control.Background = null;
+                Rect rect = VisualTreeHelper.GetDescendantBounds( control );
+                var dv = new DrawingVisual();
+                using ( var ctx = dv.RenderOpen() )
+                {
+                    var brush = new VisualBrush( control );
+                    ctx.DrawRectangle( brush, null, new Rect( rect.Size ) );
+                }
+
+                int width = (int)rect.Width;
+                int height = (int)rect.Height;
+                var rtb = new RenderTargetBitmap( width, height, 96, 96, PixelFormats.Pbgra32 );
+                rtb.Render( dv );
+
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add( BitmapFrame.Create( rtb ) );
+                using ( var fs = new FileStream( $"Расходы_{DateTime.Now:dd_MM_yy_ss}.png", FileMode.Create, FileAccess.Write, FileShare.None ) )
+                    encoder.Save( fs );
             }
         }
     }
